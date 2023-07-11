@@ -275,7 +275,8 @@ void TsFusResult2Js(StTsFusResultOutput& result, std::string& str)
         puts(sb.GetString());
         // str = sb.GetString();
 
-        markerInfoValue.AddMember("markerDetailInfo", rapidjson::StringRef(sb.GetString()), allocator);
+        // markerInfoValue.AddMember("markerDetailInfo", rapidjson::StringRef(sb.GetString()), allocator);
+        markerInfoValue.AddMember("markerDetailInfo", rapidjson::Value(sb.GetString(), allocator), allocator);
 
         dataElementValue.AddMember("markerInfo", markerInfoValue, allocator);
 
@@ -378,7 +379,8 @@ static void MarkerInfoSt2Js(StMapMarkerInfo& markerinfo, rapidjson::Value& val, 
     markerDetailInfoValue.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
     puts(sb.GetString());
     // str = sb.GetString();
-    val.AddMember("markerDetailInfo", rapidjson::StringRef(sb.GetString()), allocator);
+    // val.AddMember("markerDetailInfo", rapidjson::StringRef(sb.GetString()), allocator);
+    markerInfoValue.AddMember("markerDetailInfo", rapidjson::Value(sb.GetString(), allocator), allocator);
 }
 
 void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)

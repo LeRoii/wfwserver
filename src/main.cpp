@@ -77,8 +77,6 @@ std::string TsService(std::string JsonReq)
     return ret;
 }
 
-
-
 int main(int argc, char *argv[])
 {   
     spdlog::set_level(spdlog::level::debug);
