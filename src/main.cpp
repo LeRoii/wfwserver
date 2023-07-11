@@ -11,6 +11,7 @@
 #include <iostream>
 #include "utils.h"
 #include "spdlog/spdlog.h"
+#include "algo.h"
 
 using namespace std;
 using namespace XT_RPC;
@@ -48,18 +49,31 @@ std::string echo2(std::string JsonReq)
     return respons;
 }
 
-std::string TsFusionSrv(std::string JsonReq)
+std::string TsService(std::string JsonReq)
 {
-    printf("TsFusionSrv start \n");
+    printf("TsService start \n");
+
+    EnTaskCls enTaskCls = EN_TS_NONE;
+    ParseJsonInput(JsonReq.c_str(), enTaskCls);
+
     std::string ret;
-    StTsFusInput tsfusinput;
-    StTsFusResultOutput tsfusoutput;
-    Json2TsFusInput(JsonReq.c_str(), tsfusinput);
+    if(EN_TS_FUS == enTaskCls)
+    {
+        StTsFusInput tsfusinput;
+        StTsFusResultOutput tsfusoutput;
+        Json2TsFusInput(JsonReq.c_str(), tsfusinput);
+        Ts_Fus(tsfusinput, tsfusoutput);
+        TsFusResult2Js(tsfusoutput, ret);
+    }
+    else if(EN_TS_ANA == enTaskCls)
+    {
+        StTsAnaInput tsanainput;
+        StTsAnaResultOutput tsanaoutput;
+        Json2TsAnaInput(JsonReq.c_str(), tsanainput);
+        Ts_Anals(tsanainput, tsanaoutput);
+        TsAnaResult2Js(tsanaoutput, ret);
+    }
 
-    TsFusResult2Js(tsfusoutput, ret);
-
-
-    std::string respons = "ServerA:" + JsonReq;
     return ret;
 }
 
@@ -72,7 +86,7 @@ int main(int argc, char *argv[])
     int ret = remote->init("ServerA", "localhost:1234", "localhost:2379");
     printf("init ServerA:%d\n", ret);
     remote->register_handler("echo", echo);
-    remote->register_handler("tsfus", TsFusionSrv);
+    remote->register_handler("tsfus", TsService);
     remote->register_handler("echo2", echo2);
     getchar();
     delete remote;

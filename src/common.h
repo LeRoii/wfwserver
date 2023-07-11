@@ -32,6 +32,14 @@ struct StObject
 
 };
 
+enum EnTaskCls
+{
+    EN_TS_NONE = 0,
+    EN_TS_FUS = 1,
+    EN_TS_ANA = 2
+};
+
+
 struct StMarkerDetailInfo
 {
     std::string camp;

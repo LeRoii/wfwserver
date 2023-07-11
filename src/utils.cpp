@@ -121,6 +121,34 @@
 // }
 
 
+void ParseJsonInput(const char* str, EnTaskCls& enTaskCls)
+{
+    spdlog::debug("ParseJsonInput start!");
+    rapidjson::Document dom;
+    printf("input data:%s\n", str);
+    if(dom.Parse(str).HasParseError())
+    {
+        printf("json parse failed\n");
+        return;
+    }
+
+    if (dom.HasMember("userid") && dom["userid"].IsString())
+    {
+        std::string userid = dom["userid"].GetString();
+        if(userid.compare("/AIService/TS/Send") == 0)
+        {
+            enTaskCls = EN_TS_FUS;
+        }
+        else if(userid.compare("/AIService/analysis/Send") == 0)
+        {
+            enTaskCls = EN_TS_ANA;
+        }
+    }
+    return;
+}
+
+
+
 //detailInfo is string
 void Json2TsFusInput(const char* str, StTsFusInput& TsFusInput)
 {
@@ -266,7 +294,7 @@ void TsFusResult2Js(StTsFusResultOutput& result, std::string& str)
 }
 
 
-void Json2TsAnaInput(const char* str, const uint32_t len, StTsAnaInput& TsAnaInput)
+void Json2TsAnaInput(const char* str, StTsAnaInput& TsAnaInput)
 {
     rapidjson::Document dom;
     if(dom.Parse(str).HasParseError())
