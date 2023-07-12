@@ -185,5 +185,4 @@ struct StThreatResultOutput
     std::string api;//"mapPlugin/ai"
 };
 
-
 #endif

@@ -11,6 +11,8 @@
  * 
 *********************/
 
+#ifndef _HTTPSERVER_H_
+#define _HTTPSERVER_H_
 
 #include <Poco/Util/ServerApplication.h>
 #include <Poco/Net/ServerSocket.h>
@@ -60,3 +62,5 @@ private:
     //http监听服务
     HTTPServer * _httpSvr;
 };
+
+#endif

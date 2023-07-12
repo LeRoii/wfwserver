@@ -1,8 +1,10 @@
+
+#include "spdlog/spdlog.h"
 #include"common.h"
 #include "utils.h"
 #include "rapidjson/document.h"
 #include "rapidjson/prettywriter.h"
-#include "spdlog/spdlog.h"
+
 
 //detailInfo is json object
 // void Json2TsFusInput(const char* str, const uint32_t len, StTsFusInput& TsFusInput)
@@ -436,7 +438,44 @@ void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)
     str = std::string(sb.GetString());
 }
 
-void IntelResult2Js(StIntelFusResultOutput& result, std::string& str)
+void IntelResult2Js(StIntelFusResultData& result, std::string& str)
 {
+    rapidjson::Document dom;
+    dom.SetObject();
+    rapidjson::Document::AllocatorType& allocator = dom.GetAllocator();
+    rapidjson::Value v;
+    v.SetInt(2);
+    dom.AddMember("type", v, allocator);
 
+    rapidjson::Value dataValue(rapidjson::Type::kObjectType);
+    rapidjson::Value ObjsValue(rapidjson::Type::kArrayType);
+    dataValue.AddMember("text", rapidjson::StringRef(result.text.c_str()), allocator);
+
+    for(auto &obj:result.objs)
+    {
+        rapidjson::Value ObjValue(rapidjson::Type::kObjectType);
+        ObjValue.AddMember("id", obj.id, allocator);
+        ObjValue.AddMember("mapType", rapidjson::StringRef(obj.mapType.c_str()), allocator);
+        ObjValue.AddMember("camp", rapidjson::StringRef(obj.camp.c_str()), allocator);
+        ObjValue.AddMember("isWeapon", obj.isWeapon, allocator);
+        ObjValue.AddMember("lon_lat", rapidjson::StringRef(obj.lon_lat.c_str()), allocator);
+        ObjValue.AddMember("obj_bbox", rapidjson::StringRef(obj.obj_bbox.c_str()), allocator);
+        ObjValue.AddMember("sTime", rapidjson::StringRef(obj.sTime.c_str()), allocator);
+        ObjValue.AddMember("sThreatDegree", rapidjson::StringRef(obj.sThreatDegree.c_str()), allocator);
+        ObjValue.AddMember("trend", rapidjson::StringRef(obj.trend.c_str()), allocator);
+
+        ObjsValue.PushBack(ObjValue, allocator);
+    }
+
+    dataValue.AddMember("map", ObjsValue, allocator);
+
+    v.SetString("mapPlugin/ai");
+    dom.AddMember("api", v, allocator);
+
+    rapidjson::StringBuffer sb;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+    dom.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
+    puts(sb.GetString());
+    // str = sb.GetString();
+    str = std::string(sb.GetString());
 }
