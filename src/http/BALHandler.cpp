@@ -10,9 +10,11 @@
  * 
  * 
 *********************/
+#include "spdlog/spdlog.h"
 
 #include "BALHandler.h"
 #include "common.h"
+#include "utils.h"
 
 #include <dirent.h>
 #include <fstream>
@@ -130,7 +132,7 @@ void getFiles(const string path, vector<string>& files )
 FilePartHandle::FilePartHandle()
 {
     memset(m_SaveDir, 0 , MAX_DIRPATH);
-    strcpy(m_SaveDir, "/app/recvdata");
+    strcpy(m_SaveDir, "/app/recvdata/");
     // m_SaveDir = "/app/recvdata";
 
     // MQTTCLIENT::Common::GetValueByKeyFromConfig("HTTP_FILE_SAVE_DIR", m_SaveDir, MQTTCLIENT::MAX_DIRPATH);
@@ -332,6 +334,8 @@ void FilePartHandle::QBFusion()
             {
                 std::cout<<"\n\nDeal Fusion picture begin!!!!"<<std::endl;
                 cv::Mat img = cv::imread(files[i]);
+
+                printf("img is empty:%d. %s\n", img.empty(), files[i].c_str());
                 std::vector<std::string> detret;
                 DetectorRun(img, detret);
 
@@ -745,6 +749,14 @@ void FilePartHandle::QBFusion()
         }
 
         IntelFusResultData.text = s_text;
+        // printf("s_text:%s\nIntelFusResultData size:%d", s_text.c_str(), IntelFusResultData.objs.size());
+
+        spdlog::debug("qb fusion s_text:{}, IntelFusResultData size:{}\n", s_text.c_str(), IntelFusResultData.objs.size());
+
+        std::string retjs;
+        IntelResult2Js(IntelFusResultData, retjs);
+        spdlog::debug("qb fusion complete!\n {}", retjs);
+        
         
 
         // strncpy(objRet.text, s_text.c_str(), s_text.length()>MSG_LEN-1?MSG_LEN-1:s_text.length());

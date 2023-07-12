@@ -99,33 +99,38 @@ void Ts_Anals(StTsAnaInput& input, StTsAnaResultOutput& output)
     //     default:
     //         break;
     // }
-
-
-    for(auto& marker:m_markers)
+    // std::vector<StTsAnaResultData> result;
+    AnalysisAlgo(m_markers, output.data);
+    for(auto& dataElement:output.data)
     {
-        StTsAnaResultData AnaResultData;
-        AnaResultData.longitude;
-        AnaResultData.latitude;
-        AnaResultData.i32Type;
-        AnaResultData.angle;
-
-        std::vector<StMapMarkerInfo> LineMarkers;
-        std::vector<StMapMarkerInfo> IntentMarkers;
-        std::vector<StMapMarkerInfo> ShapeMarkers;
-
-        //意图预测
-        StMapMarkerInfo IntentMarker;
-        IntentMarker.intent = "";
-        IntentMarkers.push_back(IntentMarker);
-
-        //轨迹预测
-
-        //火力覆盖范围预测
-
-        AnaResultData.line = LineMarkers;
-        AnaResultData.intent = IntentMarkers;
-        AnaResultData.shape = ShapeMarkers;
-
-        output.data.push_back(AnaResultData);
+        dataElement.i32Type = input.data.i32Type;
     }
+
+    // for(auto& marker:m_markers)
+    // {
+    //     StTsAnaResultData AnaResultData;
+    //     AnaResultData.longitude;
+    //     AnaResultData.latitude;
+    //     AnaResultData.i32Type;
+    //     AnaResultData.angle;
+
+    //     std::vector<StMapMarkerInfo> LineMarkers;
+    //     std::vector<StMapMarkerInfo> IntentMarkers;
+    //     std::vector<StMapMarkerInfo> ShapeMarkers;
+
+    //     //意图预测
+    //     StMapMarkerInfo IntentMarker;
+    //     IntentMarker.intent = "";
+    //     IntentMarkers.push_back(IntentMarker);
+
+    //     //轨迹预测
+
+    //     //火力覆盖范围预测
+
+    //     AnaResultData.line = LineMarkers;
+    //     AnaResultData.intent = IntentMarkers;
+    //     AnaResultData.shape = ShapeMarkers;
+
+    //     output.data.push_back(AnaResultData);
+    // }
 }

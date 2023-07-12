@@ -45,8 +45,6 @@
 
 #include <Poco/FileStream.h>
 
-
-
 using Poco::Net::ServerSocket;
 using Poco::Net::HTTPRequest;
 using Poco::Net::HTTPRequestHandler;
@@ -100,7 +98,7 @@ const std::uint16_t MAX_DIRPATH(1024);
 const std::uint32_t MSG_LEN(1024);
 const std::uint32_t MAX_MSG_LEN(2*1024*1024);
 
-
+int DetectorInit();
 int DetectorRun(cv::Mat &img, std::vector<std::string> &detret);
 
 class FilePartHandle : public Poco::Net::PartHandler

@@ -551,6 +551,7 @@ int DetectorInit()
 }
 int  DetectorRun(cv::Mat &img, std::vector<std::string> &detret)
 {
+  // printf("DetectorRun!!!!\n");
     int height = 640;
     int width = 640;
     int channel = 3;

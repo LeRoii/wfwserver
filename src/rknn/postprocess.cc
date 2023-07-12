@@ -23,7 +23,7 @@
 
 #include <set>
 #include <vector>
-#define LABEL_NALE_TXT_PATH "./Init.dat"
+#define LABEL_NALE_TXT_PATH "/app/Init.dat"
 
 static char* labels[OBJ_CLASS_NUM];
 

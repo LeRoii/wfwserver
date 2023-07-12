@@ -90,6 +90,8 @@ int main(int argc, char *argv[])
     printf("init ServerA:%d\n", ret);
     remote->register_handler("tsfus", TsService);
 
+    DetectorInit();
+
 /*################################## HTTP SERVER Start #######################################################*/
 
 	HttpApplication app;
