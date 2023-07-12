@@ -3,6 +3,11 @@
 
 std::vector<StMapMarkerInfo> m_markers;
 
+void AnalysisAlgo(std::vector<StMapMarkerInfo>& markers, std::vector<StTsAnaResultData>& result)
+{
+    
+}
+
 static int Is_In_List(StMapMarkerInfo &target)
 {
     if(m_markers.empty())

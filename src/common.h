@@ -1,9 +1,9 @@
 #ifndef _COMMON_H_
 #define _COMMON_H_
 
-#include<string>
-#include<vector>
-
+#include <string>
+#include <vector>
+#include <utility>
 
 struct StObject
 {
@@ -71,6 +71,9 @@ struct StMapMarkerInfo
     std::string publisherUserId;
     std::string elevation;
     std::string intent;
+    std::string grade;
+
+    std::vector<std::pair<double, double>> pos;
 };
 
 struct StTsFusInputData
@@ -159,7 +162,7 @@ struct StIntelFusResultData
     std::string api;//"mapPlugin/ai"
 };
 
-struct StIntelFusResultResult
+struct StIntelFusResultOutput
 {
     int i32Type; //is 2
     StIntelFusResultData data;

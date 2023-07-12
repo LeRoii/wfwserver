@@ -13,6 +13,8 @@
 #include "spdlog/spdlog.h"
 #include "algo.h"
 
+#include "HttpServer.h"
+
 using namespace std;
 using namespace XT_RPC;
 Remote *remote = new Remote();
@@ -83,9 +85,16 @@ int main(int argc, char *argv[])
     // int ret = remote->init("ServerA", "localhost:1234", "172.16.2.2:2379");
     int ret = remote->init("ServerA", "localhost:1234", "localhost:2379");
     printf("init ServerA:%d\n", ret);
-    remote->register_handler("echo", echo);
     remote->register_handler("tsfus", TsService);
-    remote->register_handler("echo2", echo2);
+
+/*################################## HTTP SERVER Start #######################################################*/
+
+	HttpApplication app;
+	//拥塞
+	app.run(argc, argv);
+/*################################## HTTP SERVER End #######################################################*/
+
+
     getchar();
     delete remote;
     return 0;
