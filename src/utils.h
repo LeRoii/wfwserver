@@ -8,5 +8,6 @@ void TsFusResult2Js(StTsFusResultOutput& result, std::string& str);
 void Json2TsAnaInput(const char* str, StTsAnaInput& TsAnaInput);
 void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str);
 void IntelResult2Js(StIntelFusResultData& result, std::string& str);
+void ThreatResult2Js(StThreatResultOutput& result, std::string& str);
 
 #endif

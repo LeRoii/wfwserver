@@ -26,7 +26,8 @@ map<string, string> TargetTypeMap{{ "人", "person"}, { "人员", "person"}, {"�
 vector<string> files;
 
 void getFiles(const string path, vector<string>& files )  
-{ 
+{
+    files.clear();
     DIR* d = opendir(path.c_str());
     if(d == NULL)
     {
@@ -203,7 +204,7 @@ void FilePartHandle::SaveFile()
             {
                 sprintf(script, "unzip -q   %s%s   -d %s ", filePath.c_str(), (file_b.file_name).c_str(), filePath.c_str());
 
-                std::cout<<"zip decompression command:"<<script<<std::endl;
+                std::cout<<"zip decompression command:\n"<<script<<std::endl;
                 system(script);
                 
 
@@ -212,6 +213,11 @@ void FilePartHandle::SaveFile()
                 getFiles(filePath, files);
 
                 std::cout<<"recv QB data files.size:"<<files.size()<<std::endl;
+
+                for(auto& recvfile:files)
+                {
+                    spdlog::debug("{}", recvfile);
+                }
 
                 //情报融合处理
                 this->QBFusion();
@@ -319,11 +325,13 @@ void FilePartHandle::QBFusion()
         // // memset(obj.st_api, 0, STR_LEN);
         // memcpy(obj.st_api, "mapPlugin/ai", strlen("mapPlugin/ai"));
 
-        std::cout<<"recv QB data files.size:"<<files.size()<<std::endl;
+        // std::cout<<"recv QB data files.size:"<<files.size()<<std::endl;
+        spdlog::debug("recv QB data files.size:{}", files.size());
         //执行底层算法
         for(int i=0; i< files.size();i++)
         {
-            std::cout<<std::endl<<"DetectorRun:"<<files[i]<<std::endl<<std::endl;
+            // std::cout<<std::endl<<"DetectorRun:"<<files[i]<<std::endl<<std::endl;
+            spdlog::debug("process QB data files:{}", files[i]);
             //处理图片类型文件
             if(
                 (strncmp(files[i].substr(files[i].length()-4).c_str(), ".jpg", 4) == 0)
@@ -372,6 +380,7 @@ void FilePartHandle::QBFusion()
                     obj.obj_bbox = detret[j*2+1];
                     obj.camp = "";
                     obj.trend = "";
+                    obj.isWeapon = false;
 
                     IntelFusResultData.objs.push_back(obj);
 
@@ -530,13 +539,15 @@ void FilePartHandle::QBFusion()
                 {
                     std::cout<<"open file fail:"<<path<<std::endl;
                 }
-                char buffer[2048]={0};
-                while(ifs>>buffer)
-                {
 
-                }
+                std::stringstream buffer;
+                buffer << ifs.rdbuf();  // 将文件内容读取到字符串流中
+                ifs.close();  // 关闭文件
+                std::string content = buffer.str();
 
-                s_text.append(string(buffer));
+                spdlog::debug("voice rec result:{}", content);
+
+                s_text.append(string(content));
 
                 
                 //删除语音转换生成的临时txt文件

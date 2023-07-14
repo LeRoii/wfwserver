@@ -132,6 +132,7 @@ struct StTsAnaResultData
     std::vector<StMapMarkerInfo> line;
     std::vector<StMapMarkerInfo> intent;
     std::vector<StMapMarkerInfo> shape;
+    std::vector<StMapMarkerInfo> force;
 };
 
 struct StTsAnaResultOutput

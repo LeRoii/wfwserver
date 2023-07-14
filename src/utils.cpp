@@ -410,6 +410,7 @@ void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)
         rapidjson::Value lineValue(rapidjson::Type::kArrayType);
         rapidjson::Value intentValue(rapidjson::Type::kArrayType);
         rapidjson::Value shapeValue(rapidjson::Type::kArrayType);
+        rapidjson::Value forceValue(rapidjson::Type::kArrayType);
 
         rapidjson::Value intentElementValue(rapidjson::Type::kObjectType);
         MarkerInfoSt2Js(dataElement.intent[0], intentElementValue, allocator);
@@ -427,6 +428,13 @@ void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)
             rapidjson::Value MarkerInfoValue(rapidjson::Type::kObjectType);
             MarkerInfoSt2Js(pt, MarkerInfoValue, allocator);
             shapeValue.PushBack(MarkerInfoValue, allocator);
+        }
+
+        for(auto &pt:dataElement.force)
+        {
+            rapidjson::Value MarkerInfoValue(rapidjson::Type::kObjectType);
+            MarkerInfoSt2Js(pt, MarkerInfoValue, allocator);
+            forceValue.PushBack(MarkerInfoValue, allocator);
         }
     }
 
@@ -474,6 +482,39 @@ void IntelResult2Js(StIntelFusResultData& result, std::string& str)
     v.SetString("mapPlugin/ai");
     dom.AddMember("api", v, allocator);
 
+    rapidjson::StringBuffer sb;
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+    dom.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
+    // puts(sb.GetString());
+    // str = sb.GetString();
+    str = std::string(sb.GetString());
+}
+
+void ThreatResult2Js(StThreatResultOutput& result, std::string& str)
+{
+    rapidjson::Document dom;
+    dom.SetObject();
+    rapidjson::Document::AllocatorType& allocator = dom.GetAllocator();
+    rapidjson::Value v;
+    v.SetInt(3);
+    dom.AddMember("type", v, allocator);
+
+    rapidjson::Value dataValue(rapidjson::Type::kArrayType);
+
+    for(auto& dataElement:result.data)
+    {
+        rapidjson::Value dataElementValue(rapidjson::Type::kObjectType);
+        dataElementValue.AddMember("id", dataElement.id, allocator);
+        dataElementValue.AddMember("targetName", rapidjson::StringRef(dataElement.targetName.c_str()), allocator);
+        dataElementValue.AddMember("grade", rapidjson::StringRef(dataElement.grade.c_str()), allocator);
+
+        dataValue.PushBack(dataElementValue, allocator);
+    }
+
+    dom.AddMember("data", dataValue, allocator);
+
+    v.SetString("mapPlugin/ai");
+    dom.AddMember("api", v, allocator);
     rapidjson::StringBuffer sb;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
     dom.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
