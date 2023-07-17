@@ -228,7 +228,20 @@ void Ts_Anals(StTsAnaInput& input, StTsAnaResultOutput& output)
         printf("force size:%d\n", output.data[i].force.size());
 
     }
+}
 
-    
+void Threat_Anals(StThreatResultOutput& output)
+{
+    output.i32Type = 3;
+    output.api = "mapPlugin/ai";
 
+    for(int i=0;i<m_markers.size();i++)
+    {
+        StThreatResultData DataElement;
+        DataElement.id = m_markers[i].timestampAndUserId;
+        DataElement.targetName = m_markers[i].detailInfo.targetName;
+        DataElement.grade = m_markers[i].grade;
+
+        output.data.push_back(DataElement);
+    }
 }

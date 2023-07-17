@@ -24,6 +24,7 @@ map<string, string> TargetTypeMap{{ "人", "person"}, { "人员", "person"}, {"�
 
 
 vector<string> files;
+void SendQBFusResult(std::string& ret);
 
 void getFiles(const string path, vector<string>& files )  
 {
@@ -767,6 +768,7 @@ void FilePartHandle::QBFusion()
         std::string retjs;
         IntelResult2Js(IntelFusResultData, retjs);
         spdlog::debug("qb fusion complete!\n {}", retjs);
+        SendQBFusResult(retjs);
         
         
 

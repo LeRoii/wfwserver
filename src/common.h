@@ -178,7 +178,7 @@ struct StIntelFusResultOutput
 //threat Analysis
 struct StThreatResultData
 {
-    int id;
+    std::string id;
     std::string targetName;
     std::string grade;
 };

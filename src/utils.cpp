@@ -538,7 +538,7 @@ void ThreatResult2Js(StThreatResultOutput& result, std::string& str)
     for(auto& dataElement:result.data)
     {
         rapidjson::Value dataElementValue(rapidjson::Type::kObjectType);
-        dataElementValue.AddMember("id", dataElement.id, allocator);
+        dataElementValue.AddMember("id", rapidjson::StringRef(dataElement.id.c_str()), allocator);
         dataElementValue.AddMember("targetName", rapidjson::StringRef(dataElement.targetName.c_str()), allocator);
         dataElementValue.AddMember("grade", rapidjson::StringRef(dataElement.grade.c_str()), allocator);
 

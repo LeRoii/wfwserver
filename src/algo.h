@@ -5,5 +5,6 @@
 
 void Ts_Fus(StTsFusInput& input, StTsFusResultOutput& output);
 void Ts_Anals(StTsAnaInput& input, StTsAnaResultOutput& output);
+void Threat_Anals(StThreatResultOutput& output);
 
 #endif

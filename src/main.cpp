@@ -21,6 +21,11 @@
 using namespace std;
 using namespace XT_RPC;
 Remote *remote = new Remote();
+
+void SendQBFusResult(std::string& ret)
+{
+    printf("SendQBFusResult:%s\n", ret.c_str());
+}
 std::string echo(std::string JsonReq)
 {
     printf("function test: echo start \n");
