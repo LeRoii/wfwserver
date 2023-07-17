@@ -19,7 +19,7 @@
 #include <dirent.h>
 #include <fstream>
 
-map<string, string> TargetTypeDic{{"person", "人员"}, {"soldier","士兵"}, {"vehicle", "车辆"}, {"military vehicle", "装甲车"}};
+map<string, string> TargetTypeDic{{"person", "人员"}, {"soldier","士兵"}, {"vehicle", "车辆"}, {"millitary vehicle", "装甲车"}};
 map<string, string> TargetTypeMap{{ "人", "person"}, { "人员", "person"}, {"士兵", "soldier"}, {"车", "vehicle"}, {"车辆", "vehicle"}, {"装甲车", "millitary vehicle"}};
 
 

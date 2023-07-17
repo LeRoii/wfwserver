@@ -53,6 +53,7 @@ struct StMarkerDetailInfo
     uint32_t isWeapon;
     uint32_t hitRadius;
     std::string targetType;
+    StMarkerDetailInfo():camp(""),targetName(""),latitude(0),longitude(0),targetCount(1),targetDirection(""),targetSpeed(0),targetState(0),isWeapon(0),hitRadius(0){}
 };
 
 struct StMapMarkerInfo
@@ -74,6 +75,9 @@ struct StMapMarkerInfo
     std::string grade;
 
     std::vector<std::pair<double, double>> pos;
+
+    StMapMarkerInfo():timestampAndUserId(""), latitude(0), longitude(0),markerUrl(""),jbMarkerCode(0),jbColor(""),
+    addMarkerTime(0),delMarkerTime(0),updateMarkerTime(0){}
 };
 
 struct StTsFusInputData

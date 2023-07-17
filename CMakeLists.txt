@@ -42,7 +42,10 @@ include_directories( ${POCO_INCLUDE_DIRS})
 include_directories(thirdparty/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/http
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/tsyc/include
+    /usr/include/eigen3/
+    )
 
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-Bsymbolic")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Bsymbolic")

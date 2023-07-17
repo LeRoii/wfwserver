@@ -116,7 +116,7 @@
 
 //     printf("\nTsFusResult2Js result:\n");
 //     rapidjson::StringBuffer sb;
-//     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+//     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 //     dom.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
 //     puts(sb.GetString());
 //     str = sb.GetString();
@@ -146,6 +146,7 @@ void ParseJsonInput(const char* str, EnTaskCls& enTaskCls)
             enTaskCls = EN_TS_ANA;
         }
     }
+    spdlog::debug("ParseJsonInput end!");
     return;
 }
 
@@ -154,8 +155,9 @@ void ParseJsonInput(const char* str, EnTaskCls& enTaskCls)
 //detailInfo is string
 void Json2TsFusInput(const char* str, StTsFusInput& TsFusInput)
 {
+    spdlog::debug("Json2TsFusInput start!");
     rapidjson::Document dom;
-    printf("input data:%s\n", str);
+    // printf("input data:%s\n", str);
     if(dom.Parse(str).HasParseError())
     {
         printf("json parse failed\n");
@@ -185,11 +187,10 @@ void Json2TsFusInput(const char* str, StTsFusInput& TsFusInput)
         dataElement.MapMarker.delMarkerTime = jsMarkerInfo["delMarkerTime"].GetUint64();
         dataElement.MapMarker.updateMarkerTime = jsMarkerInfo["updateMarkerTime"].GetUint64();
         dataElement.MapMarker.publisherUserId = jsMarkerInfo["publisherUserId"].GetString();
-        dataElement.MapMarker.publisherUserId = jsMarkerInfo["elevation"].GetString();
-        dataElement.MapMarker.publisherUserId = jsMarkerInfo["intent"].GetString();
+        dataElement.MapMarker.elevation = jsMarkerInfo["elevation"].GetString();
+        dataElement.MapMarker.intent = jsMarkerInfo["intent"].GetString();
 
         std::string detailInfo = jsMarkerInfo["markerDetailInfo"].GetString();
-
 
         rapidjson::Document detailInfoDom;
         if(detailInfoDom.Parse(detailInfo.c_str()).HasParseError())
@@ -223,6 +224,7 @@ void Json2TsFusInput(const char* str, StTsFusInput& TsFusInput)
 void TsFusResult2Js(StTsFusResultOutput& result, std::string& str)
 // void TsFusResult2Js(StTsFusResultData& result, char* str)
 {
+    spdlog::debug("TsFusResult2Js start!");
     rapidjson::Document dom;
     dom.SetObject();
     rapidjson::Document::AllocatorType& allocator = dom.GetAllocator();
@@ -248,22 +250,13 @@ void TsFusResult2Js(StTsFusResultOutput& result, std::string& str)
         markerInfoValue.AddMember("latitude", dataElement.markerInfo.latitude , allocator);
         markerInfoValue.AddMember("longitude", dataElement.markerInfo.longitude , allocator);
         markerInfoValue.AddMember("markerUrl", rapidjson::StringRef(dataElement.markerInfo.markerUrl.c_str()) , allocator);
-        markerInfoValue.AddMember("jbMarkerCode", dataElement.markerInfo.jbMarkerCode , allocator);
-        markerInfoValue.AddMember("jbColor", rapidjson::StringRef(dataElement.markerInfo.jbColor.c_str()) , allocator);
-        markerInfoValue.AddMember("setOption", rapidjson::StringRef(dataElement.markerInfo.setOption.c_str()) , allocator);
-        markerInfoValue.AddMember("addMarkerTime", dataElement.markerInfo.addMarkerTime , allocator);
-        markerInfoValue.AddMember("delMarkerTime", dataElement.markerInfo.delMarkerTime , allocator);
-        markerInfoValue.AddMember("updateMarkerTime", dataElement.markerInfo.updateMarkerTime , allocator);
-        markerInfoValue.AddMember("publisherUserId", rapidjson::StringRef(dataElement.markerInfo.publisherUserId.c_str()) , allocator);
-        markerInfoValue.AddMember("elevation", rapidjson::StringRef(dataElement.markerInfo.publisherUserId.c_str()) , allocator);
-        markerInfoValue.AddMember("intent", rapidjson::StringRef(dataElement.markerInfo.publisherUserId.c_str()) , allocator);
 
         rapidjson::Value markerDetailInfoValue(rapidjson::Type::kObjectType);
         markerDetailInfoValue.AddMember("camp", rapidjson::StringRef(dataElement.markerInfo.detailInfo.camp.c_str()) , allocator);
         markerDetailInfoValue.AddMember("targetName", rapidjson::StringRef(dataElement.markerInfo.detailInfo.targetName.c_str()) , allocator);
         markerDetailInfoValue.AddMember("latitude", dataElement.markerInfo.detailInfo.latitude , allocator);
         markerDetailInfoValue.AddMember("longitude", dataElement.markerInfo.detailInfo.longitude , allocator);
-        markerDetailInfoValue.AddMember("targetCount", dataElement.markerInfo.detailInfo.longitude , allocator);
+        markerDetailInfoValue.AddMember("targetCount", dataElement.markerInfo.detailInfo.targetCount , allocator);
         markerDetailInfoValue.AddMember("targetDirection", rapidjson::StringRef(dataElement.markerInfo.detailInfo.targetDirection.c_str()) , allocator);
         markerDetailInfoValue.AddMember("targetSpeed", dataElement.markerInfo.detailInfo.targetSpeed , allocator);
         markerDetailInfoValue.AddMember("targetState", dataElement.markerInfo.detailInfo.targetState , allocator);
@@ -272,13 +265,22 @@ void TsFusResult2Js(StTsFusResultOutput& result, std::string& str)
         markerDetailInfoValue.AddMember("targetType", rapidjson::StringRef(dataElement.markerInfo.detailInfo.targetType.c_str()) , allocator);
 
         rapidjson::StringBuffer sb;
-        rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+        rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
         markerDetailInfoValue.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
         // puts(sb.GetString());
         // str = sb.GetString();
-
         // markerInfoValue.AddMember("markerDetailInfo", rapidjson::StringRef(sb.GetString()), allocator);
         markerInfoValue.AddMember("markerDetailInfo", rapidjson::Value(sb.GetString(), allocator), allocator);
+
+        markerInfoValue.AddMember("jbMarkerCode", dataElement.markerInfo.jbMarkerCode , allocator);
+        markerInfoValue.AddMember("jbColor", rapidjson::StringRef(dataElement.markerInfo.jbColor.c_str()) , allocator);
+        markerInfoValue.AddMember("setOption", rapidjson::StringRef(dataElement.markerInfo.setOption.c_str()) , allocator);
+        markerInfoValue.AddMember("addMarkerTime", dataElement.markerInfo.addMarkerTime , allocator);
+        markerInfoValue.AddMember("delMarkerTime", dataElement.markerInfo.delMarkerTime , allocator);
+        markerInfoValue.AddMember("updateMarkerTime", dataElement.markerInfo.updateMarkerTime , allocator);
+        markerInfoValue.AddMember("publisherUserId", rapidjson::StringRef(dataElement.markerInfo.publisherUserId.c_str()) , allocator);
+        markerInfoValue.AddMember("elevation", rapidjson::StringRef(dataElement.markerInfo.elevation.c_str()) , allocator);
+        markerInfoValue.AddMember("intent", rapidjson::StringRef(dataElement.markerInfo.intent.c_str()) , allocator);
 
         dataElementValue.AddMember("markerInfo", markerInfoValue, allocator);
 
@@ -294,11 +296,14 @@ void TsFusResult2Js(StTsFusResultOutput& result, std::string& str)
     // puts(sb.GetString());
     // str = sb.GetString();
     str = std::string(sb.GetString());
+
+    spdlog::debug("TsFusResult2Js end!");
 }
 
 
 void Json2TsAnaInput(const char* str, StTsAnaInput& TsAnaInput)
 {
+    spdlog::debug("Json2TsAnaInput start!");
     rapidjson::Document dom;
     if(dom.Parse(str).HasParseError())
     {
@@ -315,7 +320,7 @@ void Json2TsAnaInput(const char* str, StTsAnaInput& TsAnaInput)
     TsAnaInput.data.i32Type = jsTsAnaData["type"].GetInt();
     TsAnaInput.data.i32Time = jsTsAnaData["time"].GetInt();
 
-    rapidjson::Value& jsMarkerInfo = jsTsAnaData["markerInfo"];
+    rapidjson::Value& jsMarkerInfo = jsTsAnaData["MarkerInfo"];
 
     TsAnaInput.data.MapMarker.timestampAndUserId = jsMarkerInfo["timestampAndUserId"].GetString();
     TsAnaInput.data.MapMarker.latitude = jsMarkerInfo["latitude"].GetDouble();
@@ -331,19 +336,29 @@ void Json2TsAnaInput(const char* str, StTsAnaInput& TsAnaInput)
     TsAnaInput.data.MapMarker.publisherUserId = jsMarkerInfo["elevation"].GetString();
     TsAnaInput.data.MapMarker.publisherUserId = jsMarkerInfo["intent"].GetString();
 
-    rapidjson::Value& jsMarkerDetailInfo = jsMarkerInfo["markerDetailInfo"];
+    // rapidjson::Value& jsMarkerDetailInfo = jsMarkerInfo["markerDetailInfo"];
 
-    TsAnaInput.data.MapMarker.detailInfo.camp = jsMarkerDetailInfo["camp"].GetString();
-    TsAnaInput.data.MapMarker.detailInfo.targetName = jsMarkerDetailInfo["targetName"].GetString();
-    TsAnaInput.data.MapMarker.detailInfo.latitude = jsMarkerDetailInfo["latitude"].GetDouble();
-    TsAnaInput.data.MapMarker.detailInfo.longitude = jsMarkerDetailInfo["longitude"].GetDouble();
-    TsAnaInput.data.MapMarker.detailInfo.longitude = jsMarkerDetailInfo["targetCount"].GetInt();
-    TsAnaInput.data.MapMarker.detailInfo.targetDirection = jsMarkerDetailInfo["targetDirection"].GetString();
-    TsAnaInput.data.MapMarker.detailInfo.targetSpeed = jsMarkerDetailInfo["targetSpeed"].GetDouble();
-    TsAnaInput.data.MapMarker.detailInfo.targetState = jsMarkerDetailInfo["targetState"].GetUint();
-    TsAnaInput.data.MapMarker.detailInfo.isWeapon = jsMarkerDetailInfo["isWeapon"].GetUint();
-    TsAnaInput.data.MapMarker.detailInfo.hitRadius = jsMarkerDetailInfo["mHitRadius"].GetUint();
-    TsAnaInput.data.MapMarker.detailInfo.targetType = jsMarkerDetailInfo["targetType"].GetString();
+    std::string detailInfo = jsMarkerInfo["markerDetailInfo"].GetString();
+    rapidjson::Document detailInfoDom;
+    if(detailInfoDom.Parse(detailInfo.c_str()).HasParseError())
+    {
+        printf("json parse detailInfo failed\n");
+        return;
+    }
+
+    TsAnaInput.data.MapMarker.detailInfo.camp = detailInfoDom["camp"].GetString();
+    TsAnaInput.data.MapMarker.detailInfo.targetName = detailInfoDom["targetName"].GetString();
+    TsAnaInput.data.MapMarker.detailInfo.latitude = detailInfoDom["latitude"].GetDouble();
+    TsAnaInput.data.MapMarker.detailInfo.longitude = detailInfoDom["longitude"].GetDouble();
+    TsAnaInput.data.MapMarker.detailInfo.longitude = detailInfoDom["targetCount"].GetInt();
+    TsAnaInput.data.MapMarker.detailInfo.targetDirection = detailInfoDom["targetDirection"].GetString();
+    TsAnaInput.data.MapMarker.detailInfo.targetSpeed = detailInfoDom["targetSpeed"].GetDouble();
+    TsAnaInput.data.MapMarker.detailInfo.targetState = detailInfoDom["targetState"].GetUint();
+    TsAnaInput.data.MapMarker.detailInfo.isWeapon = detailInfoDom["isWeapon"].GetUint();
+    TsAnaInput.data.MapMarker.detailInfo.hitRadius = detailInfoDom["mHitRadius"].GetUint();
+    TsAnaInput.data.MapMarker.detailInfo.targetType = detailInfoDom["targetType"].GetString();
+
+    spdlog::debug("Json2TsAnaInput end!");
 }
 
 
@@ -353,22 +368,13 @@ static void MarkerInfoSt2Js(StMapMarkerInfo& markerinfo, rapidjson::Value& val, 
     val.AddMember("latitude", markerinfo.latitude , allocator);
     val.AddMember("longitude", markerinfo.longitude , allocator);
     val.AddMember("markerUrl", rapidjson::StringRef(markerinfo.markerUrl.c_str()) , allocator);
-    val.AddMember("jbMarkerCode", markerinfo.jbMarkerCode , allocator);
-    val.AddMember("jbColor", rapidjson::StringRef(markerinfo.jbColor.c_str()) , allocator);
-    val.AddMember("setOption", rapidjson::StringRef(markerinfo.setOption.c_str()) , allocator);
-    val.AddMember("addMarkerTime", markerinfo.addMarkerTime , allocator);
-    val.AddMember("delMarkerTime", markerinfo.delMarkerTime , allocator);
-    val.AddMember("updateMarkerTime", markerinfo.updateMarkerTime , allocator);
-    val.AddMember("publisherUserId", rapidjson::StringRef(markerinfo.publisherUserId.c_str()) , allocator);
-    val.AddMember("elevation", rapidjson::StringRef(markerinfo.publisherUserId.c_str()) , allocator);
-    val.AddMember("intent", rapidjson::StringRef(markerinfo.publisherUserId.c_str()) , allocator);
-
+    
     rapidjson::Value markerDetailInfoValue(rapidjson::Type::kObjectType);
     markerDetailInfoValue.AddMember("camp", rapidjson::StringRef(markerinfo.detailInfo.camp.c_str()) , allocator);
     markerDetailInfoValue.AddMember("targetName", rapidjson::StringRef(markerinfo.detailInfo.targetName.c_str()) , allocator);
     markerDetailInfoValue.AddMember("latitude", markerinfo.detailInfo.latitude , allocator);
     markerDetailInfoValue.AddMember("longitude", markerinfo.detailInfo.longitude , allocator);
-    markerDetailInfoValue.AddMember("targetCount", markerinfo.detailInfo.longitude , allocator);
+    markerDetailInfoValue.AddMember("targetCount", markerinfo.detailInfo.targetCount , allocator);
     markerDetailInfoValue.AddMember("targetDirection", rapidjson::StringRef(markerinfo.detailInfo.targetDirection.c_str()) , allocator);
     markerDetailInfoValue.AddMember("targetSpeed", markerinfo.detailInfo.targetSpeed , allocator);
     markerDetailInfoValue.AddMember("targetState", markerinfo.detailInfo.targetState , allocator);
@@ -377,16 +383,28 @@ static void MarkerInfoSt2Js(StMapMarkerInfo& markerinfo, rapidjson::Value& val, 
     markerDetailInfoValue.AddMember("targetType", rapidjson::StringRef(markerinfo.detailInfo.targetType.c_str()) , allocator);
 
     rapidjson::StringBuffer sb;
-    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
+    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
     markerDetailInfoValue.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
     // puts(sb.GetString());
     // str = sb.GetString();
     // val.AddMember("markerDetailInfo", rapidjson::StringRef(sb.GetString()), allocator);
     val.AddMember("markerDetailInfo", rapidjson::Value(sb.GetString(), allocator), allocator);
+
+    val.AddMember("jbMarkerCode", markerinfo.jbMarkerCode , allocator);
+    val.AddMember("jbColor", rapidjson::StringRef(markerinfo.jbColor.c_str()) , allocator);
+    val.AddMember("setOption", rapidjson::StringRef(markerinfo.setOption.c_str()) , allocator);
+    val.AddMember("addMarkerTime", markerinfo.addMarkerTime , allocator);
+    val.AddMember("delMarkerTime", markerinfo.delMarkerTime , allocator);
+    val.AddMember("updateMarkerTime", markerinfo.updateMarkerTime , allocator);
+    val.AddMember("publisherUserId", rapidjson::StringRef(markerinfo.publisherUserId.c_str()) , allocator);
+    val.AddMember("elevation", rapidjson::StringRef(markerinfo.elevation.c_str()) , allocator);
+    val.AddMember("intent", rapidjson::StringRef(markerinfo.intent.c_str()) , allocator);
+
 }
 
 void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)
 {
+    spdlog::debug("TsAnaResult2Js start!");
     rapidjson::Document dom;
     dom.SetObject();
     rapidjson::Document::AllocatorType& allocator = dom.GetAllocator();
@@ -402,9 +420,9 @@ void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)
     for(auto &dataElement:result.data)
     {
         rapidjson::Value dataElementValue(rapidjson::Type::kObjectType);
-        dataElementValue.AddMember("i32Type", dataElement.i32Type, allocator);
-        dataElementValue.AddMember("latitude", dataElement.latitude, allocator);
+        dataElementValue.AddMember("type", dataElement.i32Type, allocator);
         dataElementValue.AddMember("longitude", dataElement.longitude, allocator);
+        dataElementValue.AddMember("latitude", dataElement.latitude, allocator);
         dataElementValue.AddMember("angle", dataElement.angle, allocator);
 
         rapidjson::Value lineValue(rapidjson::Type::kArrayType);
@@ -423,6 +441,9 @@ void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)
             lineValue.PushBack(MarkerInfoValue, allocator);
         }
 
+        dataElementValue.AddMember("line", lineValue, allocator);
+        dataElementValue.AddMember("intent", intentValue, allocator);
+
         for(auto &pt:dataElement.shape)
         {
             rapidjson::Value MarkerInfoValue(rapidjson::Type::kObjectType);
@@ -430,24 +451,34 @@ void TsAnaResult2Js(StTsAnaResultOutput& result, std::string& str)
             shapeValue.PushBack(MarkerInfoValue, allocator);
         }
 
+        dataElementValue.AddMember("shape", shapeValue, allocator);
+
         for(auto &pt:dataElement.force)
         {
             rapidjson::Value MarkerInfoValue(rapidjson::Type::kObjectType);
             MarkerInfoSt2Js(pt, MarkerInfoValue, allocator);
             forceValue.PushBack(MarkerInfoValue, allocator);
         }
+
+        dataElementValue.AddMember("force", forceValue, allocator);
+
+        dataValue.PushBack(dataElementValue, allocator);
     }
+
+    dom.AddMember("data", dataValue, allocator);
 
     rapidjson::StringBuffer sb;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
-    dataValue.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
+    dom.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
     // puts(sb.GetString());
     // str = sb.GetString();
     str = std::string(sb.GetString());
+    spdlog::debug("TsAnaResult2Js end!");
 }
 
 void IntelResult2Js(StIntelFusResultData& result, std::string& str)
 {
+    spdlog::debug("IntelResult2Js start!");
     rapidjson::Document dom;
     dom.SetObject();
     rapidjson::Document::AllocatorType& allocator = dom.GetAllocator();
@@ -488,10 +519,13 @@ void IntelResult2Js(StIntelFusResultData& result, std::string& str)
     // puts(sb.GetString());
     // str = sb.GetString();
     str = std::string(sb.GetString());
+
+    spdlog::debug("IntelResult2Js end!");
 }
 
 void ThreatResult2Js(StThreatResultOutput& result, std::string& str)
 {
+    spdlog::debug("ThreatResult2Js start!");
     rapidjson::Document dom;
     dom.SetObject();
     rapidjson::Document::AllocatorType& allocator = dom.GetAllocator();
@@ -521,4 +555,6 @@ void ThreatResult2Js(StThreatResultOutput& result, std::string& str)
     // puts(sb.GetString());
     // str = sb.GetString();
     str = std::string(sb.GetString());
+
+    spdlog::debug("ThreatResult2Js end!");
 }

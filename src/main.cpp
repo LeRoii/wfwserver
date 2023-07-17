@@ -64,6 +64,7 @@ std::string TsService(std::string JsonReq)
     std::string ret;
     if(EN_TS_FUS == enTaskCls)
     {
+        spdlog::debug("Task is EN_TS_FUS");
         StTsFusInput tsfusinput;
         StTsFusResultOutput tsfusoutput;
         Json2TsFusInput(JsonReq.c_str(), tsfusinput);
@@ -72,6 +73,7 @@ std::string TsService(std::string JsonReq)
     }
     else if(EN_TS_ANA == enTaskCls)
     {
+        spdlog::debug("Task is EN_TS_ANA");
         StTsAnaInput tsanainput;
         StTsAnaResultOutput tsanaoutput;
         Json2TsAnaInput(JsonReq.c_str(), tsanainput);
