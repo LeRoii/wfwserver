@@ -524,7 +524,7 @@ void FilePartHandle::QBFusion()
             {
                 
                 std::string s_str;
-                s_str.append("/app/main -m /app/vbase.bin -f  ");
+                s_str.append("/app/main -l zh -m /app/vbase.bin -f  ");
                 s_str.append(files[i]);
 
                 std::cout<<"\n\naudio file execute command:\n"<<s_str<<std::endl<<std::endl<<std::endl;
